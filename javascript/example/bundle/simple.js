@@ -39053,20 +39053,6 @@
 
 	}
 
-	let joint_names = [
-	  "panda_joint1",
-	  "panda_joint2",
-	  "panda_joint3",
-	  "panda_joint4",
-	  "panda_joint5",
-	  "panda_joint6",
-	  "panda_joint7",
-	  "panda_joint8",
-	  "panda_hand_joint",
-	  "panda_finger_joint1",
-	  "panda_finger_joint2"
-	];
-
 	let scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,joints_array;
 
 	console.log("Start");
@@ -39184,18 +39170,11 @@
 	    camera.updateProjectionMatrix();
 	}
 
-
-	function updateJoints(){
-	    for (let i = 0; i < joint_names.length; i++) {
-	        robot.joints[joint_names[i]].setJointValue(joints_array[i]);
-	    }
-	}
-
 	function render() {
 
 	    requestAnimationFrame(render);
 	    renderer.render(scene, camera);
-	    updateJoints();
+	    //updateJoints();
 	    
 	}
 

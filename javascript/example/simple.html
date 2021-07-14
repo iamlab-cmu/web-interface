@@ -25,11 +25,21 @@
                 box-sizing: border-box;
                 display: block;
                 padding: 10px;
+                margin-top: 10px;
                 float: none;
             }
             .robot_viz {
                 width:  400px;
                 height: 400px;
+            }
+            .visuals {
+                width: 100%;
+                height: 405px;
+            }
+
+            .button{
+                padding: 3px;
+                margin-right: 5px;
             }
             
         </style>
@@ -73,16 +83,16 @@
     
     <h1>Human Interface Franka</h1>
         <p>Connection status: <span id="status"></span></p>
-        <p>Last /txt_msg received: <span id="msg"></span></p>
+        <p>Instructions: <span id="msg"></span></p>
         
         <script width = 400 height = 400 id = "robot_1" src="./bundle/simple.js"> </script> 
-        
-
         <div id="mjpeg"></div>
 
-        <div class="buttons">
-            <button onclick="log_info(1)" id="option 1">option 1</button>
-            <button onclick="log_info(2)" id="option 2">option 2</button> 
+        
+
+        <div class="visuals"></div>
+
+        <div class="buttons" id="button_container">
         </div>
         
         <script src="./scripts.js"></script>
