@@ -21,13 +21,44 @@ import {
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import URDFLoader from '../../src/URDFLoader.js';
 
-let scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial;
+let joint_names = [
+  "panda_joint1",
+  "panda_joint2",
+  "panda_joint3",
+  "panda_joint4",
+  "panda_joint5",
+  "panda_joint6",
+  "panda_joint7",
+  "panda_joint8",
+  "panda_hand_joint",
+  "panda_finger_joint1",
+  "panda_finger_joint2"
+]
 
-console.log("Start");
+let scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,joints_array;
+
+console.log("Start")
+
+
+
+var ros = new ROSLIB.Ros({url : 'ws://iam-wanda.ri.cmu.edu:9090'});
+ros.on('connection', function() {document.getElementById("status").innerHTML = "Connected";});
+var robot_listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/robot_state_publisher_node_1/robot_state',
+    messageType : 'franka_interface_msgs/RobotState'
+});
+
+
+         
+
 init();
 render();
 
 function init() {
+
+    var myCanvas = document.getElementById('myCanvas');
+
     scene = new Scene();
     scene.background = new Color(0x263238);
 
@@ -35,7 +66,7 @@ function init() {
     camera.position.set(2, 2, 2);
     camera.lookAt(0, 0, 0);
 
-    renderer = new WebGLRenderer({ antialias: true });
+    renderer = new WebGLRenderer({canvas: myCanvas, antialias: true });
     renderer.outputEncoding = sRGBEncoding;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
@@ -85,19 +116,17 @@ function init() {
             c.castShadow = true;
         });
 
+        robot_listener.subscribe(function(m) {
+            joints_array = m.q
+        });
+
         for (let i = 10; i <= 16; i++) {
             const voxel = new Mesh( cubeGeo, cubeMaterial );
             voxel.position.set(i*0.02,0.01,0.01);
             scene.add(voxel);
         }
-        // for (let i = 1; i <= 6; i++) {
-
-        //     robot.joints[`HP${ i }`].setJointValue(MathUtils.degToRad(30));
-        //     robot.joints[`KP${ i }`].setJointValue(MathUtils.degToRad(120));
-        //     robot.joints[`AP${ i }`].setJointValue(MathUtils.degToRad(-60));
-
-        // }
-        console.log(Object.keys(robot.joints))
+        
+        //updateJoints();
         robot.updateMatrixWorld(true);
 
         const bb = new Box3();
@@ -116,8 +145,6 @@ function init() {
 function onResize() {
     let width = document.currentScript.getAttribute('width');
     let height = document.currentScript.getAttribute('height');
-    console.log(width)
-    console.log(width)
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -125,9 +152,17 @@ function onResize() {
     camera.updateProjectionMatrix();
 }
 
+
+function updateJoints(){
+    for (let i = 0; i < joint_names.length; i++) {
+        robot.joints[joint_names[i]].setJointValue(joints_array[i]);
+    }
+}
+
 function render() {
 
     requestAnimationFrame(render);
     renderer.render(scene, camera);
-
+    updateJoints();
+    
 }

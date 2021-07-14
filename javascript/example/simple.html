@@ -13,16 +13,25 @@
                 padding: 5px;
             }
 
+            canvas{
+                display: inline-block;
+                background: white;
+                float:left;
+                margin: 10px;
+            }
+
+
             .buttons {
                 box-sizing: border-box;
+                display: block;
                 padding: 10px;
+                float: none;
             }
             .robot_viz {
                 width:  400px;
                 height: 400px;
-                position: relative;
-                float: left;
             }
+            
         </style>
 
         <script src="https://unpkg.com/eventemitter2@6.4.4/lib/eventemitter2.js"></script>
@@ -37,8 +46,8 @@
             var viewer = new MJPEGCANVAS.Viewer({
               divID : 'mjpeg',
               host : 'iam-wanda.ri.cmu.edu',
-              width : 480,
-              height : 480,
+              width : 400,
+              height : 400,
               topic : '/rgb/image_raw',
               interval : 200
             });
@@ -53,6 +62,11 @@
 
         </script>
     </head>
+
+    <canvas id="myCanvas" class = "robot_viz">
+         <p>hi</p>
+    </canvas>
+
     <body onload="init()">
 
 
@@ -61,19 +75,17 @@
         <p>Connection status: <span id="status"></span></p>
         <p>Last /txt_msg received: <span id="msg"></span></p>
         
+        <script width = 400 height = 400 id = "robot_1" src="./bundle/simple.js"> </script> 
+        
 
+        <div id="mjpeg"></div>
 
-            <script  width = 400 height = 400 id = "robot_1" src="./bundle/simple.js"> </script> 
-        <script class= "robot_viz" width = 400 height = 400 id = "robot_2" src="./bundle/simple.js"> </script> 
         <div class="buttons">
             <button onclick="log_info(1)" id="option 1">option 1</button>
             <button onclick="log_info(2)" id="option 2">option 2</button> 
         </div>
-
-        <div id="mjpeg"></div>
-
-        <script src="./scripts.js"></script>
         
+        <script src="./scripts.js"></script>
     </body>
 
 </html>

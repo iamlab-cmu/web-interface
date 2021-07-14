@@ -19,6 +19,12 @@ var ros = new ROSLIB.Ros({
             name : '/txt_msg',
             messageType : 'std_msgs/String'
             });
+            
+            var robot_listener = new ROSLIB.Topic({
+            ros : ros,
+            name : '/robot_state_publisher_node_1/robot_state',
+            messageType : 'franka_interface_msgs/RobotState'
+            });
 
           txt_listener.subscribe(function(m) {
             document.getElementById("msg").innerHTML = m.data;
