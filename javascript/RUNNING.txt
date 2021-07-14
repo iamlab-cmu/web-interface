@@ -1,0 +1,6 @@
+roscore
+roslaunch azure_kinect_ros_driver driver.launch
+rosrun web_video_server web_video_server
+roslaunch robot_gui_bridge websocket.launch
+cd Documents/urdf-loaders/javascript
+npm start
