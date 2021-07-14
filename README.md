@@ -6,6 +6,8 @@ URDF loading code in both [C# for Unity](./unity/Assets/URDFLoader/) and [Javasc
 
 ![Example](./unity/Assets/docs/asset%20store/all-urdfs.png)
 
+https://msadowski.github.io/ros-web-tutorial-pt1/
+
 ### Flipped Models
 
 The `_flipped` variants of the URDF ATHLETE models invert the revolute joint axes to model ATHLETE in a configuration with the legs attached to the bottom of the chassis.
