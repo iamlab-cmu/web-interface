@@ -4,7 +4,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="utf-8"/>
 
-        <title>Simple URDF Loading Example</title>
+        <title>IAM Lab Interface</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <style>
             html, body {
@@ -51,23 +56,6 @@
         <script src="https://unpkg.com/eventemitter2@6.4.4/lib/eventemitter2.js"></script>
         <script src="../mjpegcanvasjs/build/mjpegcanvas.js"></script>
 
-        <script>
-          /**
-           * Setup all visualization elements when the page is loaded. 
-           */
-          function init() {
-            // Create the main viewer.
-            var viewer = new MJPEGCANVAS.Viewer({
-              divID : 'mjpeg',
-              host : 'iam-wanda.ri.cmu.edu',
-              width : 400,
-              height : 400,
-              topic : '/rgb/image_raw',
-              interval : 200
-            });
-          }
-        </script>
-
         <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
 
         <script type="text/javascript" type="text/javascript">
@@ -77,25 +65,25 @@
         </script>
     </head>
 
-    <body onload="init()">
+    <body>
 
 
-    
-    <h1>Human Interface Franka</h1>
-        <p>Connection status: <span id="status"></span></p>
-        <p>Instructions: <span id="msg"></span></p>
-        
-            
-
-        <div id="visuals_container" class="vis">
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h1>IAM Lab Interface</h1>
+            <p>Connection status: <span id="status"></span></p>
+            <p>Instructions: <span id="msg"></span></p>
         </div>
 
-        <!--<div class="visuals"></div>-->
+        <div class="row" id="visuals_container">
+        </div>
 
-        <div class="buttons" id="button_container">
+        <div class="row" id="button_container">
         </div>
         
         <script src="./scripts.js"></script>
+
+    </div>
     </body>
 
 </html>

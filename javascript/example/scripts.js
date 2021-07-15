@@ -48,7 +48,7 @@ function generate_buttons(buttons_array){
     button.type = 'button';
     button.id = buttons_array[i].text;
     button.value = buttons_array[i].name;
-    button.className = 'button';
+    button.className = 'btn btn-outline-secondary';
     button.onclick = function() {button_click(i);};
  
     var container = document.getElementById('button_container');
@@ -93,11 +93,18 @@ function parse_data(data){
 }
 
 function display_default_screen(){
-
-  robot_viz_div = document.createElement('div');
   
   camera_div = document.createElement('div');
   camera_div.id = "mjpeg";
+  camera_div.className = "col-sm";
+
+  camera_viz = document.createElement('script'); 
+  camera_viz.id = "camera";
+  camera_viz.src = "./mjpeg_canvas_viewer.js";
+
+  robot_div = document.createElement('div');
+  robot_div.id = "robot_div";
+  robot_div.className = "col-sm";
 
   robot_viz = document.createElement('script'); 
   robot_viz.id = "robot";
@@ -109,11 +116,13 @@ function display_default_screen(){
 
   var container = document.getElementById('visuals_container');
 
-  container.appendChild(robot_canvas);
-  container.appendChild(robot_viz);
-  
-
   container.appendChild(camera_div);
+  camera_div.appendChild(camera_viz);
+
+  container.appendChild(robot_div);
+  robot_div.appendChild(robot_canvas);
+  robot_div.appendChild(robot_viz);
+  
 }
 
 function clear_screen(){
