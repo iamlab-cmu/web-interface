@@ -8,23 +8,34 @@ ros.on('error', function(error) {document.getElementById("status").innerHTML = "
 ros.on('close', function() {document.getElementById("status").innerHTML = "Closed";});
 
 
-var display_msg_listener = new ROSLIB.Topic({ros : ros,name : "/mock_human_interface_publisher",messageType : 'domain_handler_msgs/HumanInterfaceRequest'});
+var display_msg_listener = new ROSLIB.Topic({ros : ros,name : "/human_interface_request",messageType : 'domain_handler_msgs/HumanInterfaceRequest'});
+display_msg_listener.subscribe(function(data) {
+            parse_data(data);});
 
-var state_server_publisher = new ROSLIB.Topic({ros : ros,name : "/state_server",messageType : 'domain_handler_msgs/HumanInterfaceReply'});
+var state_server_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_reply",messageType : 'domain_handler_msgs/HumanInterfaceReply'});
 
-var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/domain_handler",messageType : 'std_msgs/Int32'});
+var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_confirmation",messageType : 'std_msgs/Int32'});
 
 
 let viz_data;
+let sliders = [];
 
 function button_click(i){
   console.log("button_pressed");
-  new_buttons_data  = viz_data.buttons.slice();
-  new_buttons_data[i].value = true;
+  buttons_data  = viz_data.buttons.slice();
+  sliders_data = viz_data.sliders.slice()
+
+  for(let j = 0; j < sliders_data.length;j++){
+    curr_slider = document.getElementById(sliders[j]);
+    console.log(curr_slider.value)
+    sliders_data[j].value = parseInt(curr_slider.value);
+  }
+
+  buttons_data[i].value = true;
 
   var return_msg = new ROSLIB.Message({
-      buttons: new_buttons_data,
-      sliders: viz_data.sliders,
+      buttons: buttons_data,
+      sliders: sliders_data,
       text_inputs: viz_data.text_inputs,
       Bbox: viz_data.boxes
     });
@@ -36,13 +47,20 @@ function button_click(i){
 
   console.log(return_msg)
 
-  clear_screen();
-  display_default_screen();
+  if (viz_data.display_type == 0){
+    clear_screen(clear_visuals=false);
+  }
+  else{
+    clear_screen();
+    display_default_screen();
+  }
 }
 
 
 
 function generate_buttons(buttons_array){
+  var container = document.getElementById('button_container');
+
   for(let i = 0;i < buttons_array.length;i++){
     var button = document.createElement('input');
     button.type = 'button';
@@ -50,16 +68,14 @@ function generate_buttons(buttons_array){
     button.value = buttons_array[i].name;
     button.className = 'btn btn-outline-secondary';
     button.onclick = function() {button_click(i);};
- 
-    var container = document.getElementById('button_container');
-    container.appendChild(button);
+     container.appendChild(button);
   }
 }
 
-function generate_slider(name,min,max){
+function generate_slider(name,text,min,max){
   var slider_container = document.createElement('div');
   var description = document.createElement('p');
-  description.innerHTML = name;
+  description.innerHTML = text;
   var slider_val = document.createElement('p');
   slider_val.innerHTML = "Value:" + min;
   var slider = document.createElement('input');
@@ -74,21 +90,24 @@ function generate_slider(name,min,max){
   slider_container.appendChild(slider);
   slider_container.appendChild(slider_val);
 
-  var container = document.getElementById('button_container');
+  var container = document.getElementById('slider_container');
   container.appendChild(slider_container);
 }
 
 function generate_sliders(sliders_array){
   for(let i = 0;i < sliders_array.length;i++){
-    generate_slider(sliders_array[i][0],sliders_array[i][1].toString(),sliders_array[i][2].toString());
+    generate_slider(sliders_array[i].name,sliders_array[i].text,sliders_array[i].min.toString(),sliders_array[i].max.toString());
+    sliders.push(sliders_array[i].name);
   }
 }
 
 function parse_data(data){
+  console.log(data)
   if (data.display_type == 0 ){
     viz_data = data
     document.getElementById("msg").innerHTML = data.instruction_text;
     generate_buttons(data.buttons)
+    generate_sliders(data.sliders)
   }
 }
 
@@ -125,18 +144,16 @@ function display_default_screen(){
   
 }
 
-function clear_screen(){
+function clear_screen(clear_visuals=true){
   document.getElementById("msg").innerHTML = "";
   document.getElementById('button_container').innerHTML = "";
-  document.getElementById('visuals_container').innerHTML = "";
+  document.getElementById('slider_container').innerHTML = "";
+  sliders = [];
+  if (clear_visuals) document.getElementById('visuals_container').innerHTML = "";
 }
 
 console.log("listening to data")
-display_msg_listener.subscribe(function(data) {
-            parse_data(data);
-        });
 
 display_default_screen();
 //generate_buttons(["hi","bye","option 1","option 2","option 3"]);
 //generate_sliders([["slider_1",1,10],["slider_dedewd2",5,100]]);
-console.log("executed creating buttons");

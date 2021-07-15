@@ -20,10 +20,10 @@ function init() {
   // Create the main viewer.
   var viewer = new MJPEGCANVAS.Viewer({
     divID : 'mjpeg',
-    host : 'localhost',
+    host : 'iam-wanda.ri.cmu.edu',
     width : width,
     height : height,
-    topic : '/camera/color/image_raw',
+    topic : '/rgb/image_raw',
     interval : 200
   });
 }
