@@ -112,3 +112,14 @@ MJPEGCANVAS.Viewer.prototype.changeStream = function(topic) {
   // emit an event for the change
   this.emit('change', topic);
 };
+
+function onResize() {
+    var width = (getWidth() / 2) - 100
+    var height = width * 3 / 4
+
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+}

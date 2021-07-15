@@ -39053,22 +39053,15 @@
 
 	}
 
-	let scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,joints_array;
+	let scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial, joints_array;
 
-	console.log("Start");
-
-
-
-	var ros = new ROSLIB.Ros({url : 'ws://iam-wanda.ri.cmu.edu:9090'});
+	var ros = new ROSLIB.Ros({url : 'ws://localhost:9090'});
 	ros.on('connection', function() {document.getElementById("status").innerHTML = "Connected";});
 	var robot_listener = new ROSLIB.Topic({
 	    ros : ros,
 	    name : '/robot_state_publisher_node_1/robot_state',
 	    messageType : 'franka_interface_msgs/RobotState'
 	});
-
-
-	         
 
 	init();
 	render();
@@ -39160,9 +39153,20 @@
 
 	}
 
+	function getWidth() {
+	  return Math.max(
+	    document.body.scrollWidth,
+	    document.documentElement.scrollWidth,
+	    document.body.offsetWidth,
+	    document.documentElement.offsetWidth,
+	    document.documentElement.clientWidth
+	  );
+	}
+
 	function onResize() {
-	    let width = document.currentScript.getAttribute('width');
-	    let height = document.currentScript.getAttribute('height');
+	    var width = (getWidth() / 2) - 100;
+	    var height = width * 3 / 4;
+
 	    renderer.setSize(width, height);
 	    renderer.setPixelRatio(window.devicePixelRatio);
 

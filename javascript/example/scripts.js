@@ -1,5 +1,5 @@
 var ros = new ROSLIB.Ros({
-            url : 'ws://iam-wanda.ri.cmu.edu:9090'
+            url : 'ws://localhost:9090'
           });
 
           ros.on('connection', function() {
@@ -51,7 +51,7 @@ function generate_buttons(buttons_array){
     button.type = 'button';
     button.id = buttons_array[i];
     button.value = buttons_array[i];
-    button.className = 'button';
+    button.className = 'btn btn-outline-secondary';
     button.onclick = log_info(i);
  
     var container = document.getElementById('button_container');
@@ -87,6 +87,6 @@ function generate_sliders(sliders_array){
   }
 }
 
-//generate_buttons(["hi","bye","option 1","option 2","option 3"]);
+generate_buttons(["hi","bye","option 1","option 2","option 3"]);
 generate_sliders([["slider_1",1,10],["slider_dedewd2",5,100]]);
 console.log("executed creating buttons");

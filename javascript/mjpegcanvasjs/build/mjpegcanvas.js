@@ -303,13 +303,35 @@ MJPEGCANVAS.Viewer = function(options) {
     }
   }
 
+  function onResize() {
+    var width = (getWidth() / 2) - 100
+    var height = width * 3 / 4
+
+    that.canvas.width = width;
+    that.canvas.height = height;
+  }
+
   // grab the initial stream
   this.changeStream(topic);
 
   // call draw with the given interval or rate
   setInterval(draw, drawInterval);
+
+  onResize();
+  this.canvas.addEventListener('resize', onResize);
 };
 MJPEGCANVAS.Viewer.prototype.__proto__ = EventEmitter2.prototype;
+
+function getWidth() {
+  return Math.max(
+    document.body.scrollWidth,
+    document.documentElement.scrollWidth,
+    document.body.offsetWidth,
+    document.documentElement.offsetWidth,
+    document.documentElement.clientWidth
+  );
+}
+
 
 /**
  * Change the stream of this canvas to the given topic.
