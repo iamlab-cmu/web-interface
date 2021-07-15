@@ -1,24 +1,46 @@
-# urdf-loaders
+# web-interface
 
-URDF loading code in both [C# for Unity](./unity/Assets/URDFLoader/) and [Javascript for THREE.js](./javascript/), as well as example [JPL ATHLETE](https://www-robotics.jpl.nasa.gov/systems/system.cfm?System=11) URDF files
+## Installation Instructions
+1. Install ROS Melodic following instructions here: http://wiki.ros.org/melodic/Installation/Ubuntu
+2. Install Node.js.
+```
+	curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+	sudo apt-get install -y nodejs
+```
+3. Install rosbridge server.
+```
+	sudo apt install ros-melodic-rosbridge-server
+```
+4. Install web_video_server.
+```
+	sudo apt install ros-melodic-web-video-server
+```
+5. Clone this repository.
+```
+	git clone https://github.com/iamlab-cmu/web-interface.git
+```
+6. Install node js packages required.
+```
+	cd web-interface/javascript
+	npm install
+```
 
-[Demo Here!](https://gkjohnson.github.io/urdf-loaders/javascript/example/index.bundle.html)
-
-![Example](./unity/Assets/docs/asset%20store/all-urdfs.png)
-
-https://msadowski.github.io/ros-web-tutorial-pt1/
-
-### Flipped Models
-
-The `_flipped` variants of the URDF ATHLETE models invert the revolute joint axes to model ATHLETE in a configuration with the legs attached to the bottom of the chassis.
-
-# LICENSE
-
-The software is available under the [Apache V2.0 license](./LICENSE).
-
-Copyright © 2020 California Institute of Technology. ALL RIGHTS
-RESERVED. United States Government Sponsorship Acknowledged.
-Neither the name of Caltech nor its operating division, the
-Jet Propulsion Laboratory, nor the names of its contributors may be
-used to endorse or promote products derived from this software
-without specific prior written permission.
+## Running Instructions
+1. Start a roscore.
+```
+	roscore
+```
+2. Start the rosbridge server.
+```
+	roslaunch rosbridge_server rosbridge_websocket.launch
+```
+3. Start the web_video_server.
+```
+	rosrun web_video_server web_video_server
+```
+4. Start the web server.
+```
+	cd web-interface/javascript
+	npm start
+```
+5. Navigate to localhost:9080/javascript/example/simple.html in your web browser.
