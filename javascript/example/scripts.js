@@ -37,6 +37,7 @@ function button_click(i){
   console.log(return_msg)
 
   clear_screen();
+  display_default_screen();
 }
 
 
@@ -106,9 +107,8 @@ function display_default_screen(){
   robot_canvas.id = "robot_canvas";
   robot_canvas.className = "robot_viz";
 
-  var container = document.getElementById('row');
-  //container.appendChild(robot_viz_div);
-  //
+  var container = document.getElementById('visuals_container');
+
   container.appendChild(robot_canvas);
   container.appendChild(robot_viz);
   
@@ -119,6 +119,7 @@ function display_default_screen(){
 function clear_screen(){
   document.getElementById("msg").innerHTML = "";
   document.getElementById('button_container').innerHTML = "";
+  document.getElementById('visuals_container').innerHTML = "";
 }
 
 console.log("listening to data")
