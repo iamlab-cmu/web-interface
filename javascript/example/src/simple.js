@@ -35,14 +35,13 @@ let joint_names = [
   "panda_finger_joint2"
 ]
 
-let scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,joints_array;
+let canvas,scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,joints_array;
 
 console.log("Start")
 
 
 
 var ros = new ROSLIB.Ros({url : 'ws://iam-wanda.ri.cmu.edu:9090'});
-ros.on('connection', function() {document.getElementById("status").innerHTML = "Connected";});
 var robot_listener = new ROSLIB.Topic({
     ros : ros,
     name : '/robot_state_publisher_node_1/robot_state',
@@ -51,13 +50,13 @@ var robot_listener = new ROSLIB.Topic({
 
 
          
-
+canvas = document.getElementById(document.currentScript.getAttribute('id')+"_canvas");
 init();
 render();
 
 function init() {
 
-    var myCanvas = document.getElementById('myCanvas');
+    
 
     scene = new Scene();
     scene.background = new Color(0x263238);
@@ -66,7 +65,7 @@ function init() {
     camera.position.set(2, 2, 2);
     camera.lookAt(0, 0, 0);
 
-    renderer = new WebGLRenderer({canvas: myCanvas, antialias: true });
+    renderer = new WebGLRenderer({canvas: canvas, antialias: true });
     renderer.outputEncoding = sRGBEncoding;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
@@ -143,8 +142,8 @@ function init() {
 }
 
 function onResize() {
-    let width = document.currentScript.getAttribute('width');
-    let height = document.currentScript.getAttribute('height');
+    let width = 400;
+    let height = 400;//canvas.getAttribute('height');
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
 

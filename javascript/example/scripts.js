@@ -1,47 +1,17 @@
 var ros = new ROSLIB.Ros({
             url : 'ws://iam-wanda.ri.cmu.edu:9090'
           });
+ros.on('connection', function() {document.getElementById("status").innerHTML = "Connected";});
 
-          ros.on('connection', function() {
-            document.getElementById("status").innerHTML = "Connected";
-          });
+ros.on('error', function(error) {document.getElementById("status").innerHTML = "Error";});
 
-          ros.on('error', function(error) {
-            document.getElementById("status").innerHTML = "Error";
-          });
+ros.on('close', function() {document.getElementById("status").innerHTML = "Closed";});
 
-          ros.on('close', function() {
-            document.getElementById("status").innerHTML = "Closed";
-          });
 
-            var txt_listener = new ROSLIB.Topic({
-            ros : ros,
-            name : '/txt_msg',
-            messageType : 'std_msgs/String'
-            });
-
-            var robot_listener = new ROSLIB.Topic({
-            ros : ros,
-            name : '/robot_state_publisher_node_1/robot_state',
-            messageType : 'franka_interface_msgs/RobotState'
-            });
-
-          txt_listener.subscribe(function(m) {
-            document.getElementById("msg").innerHTML = m.data;
-          });
-
-          cmd_vel_listener = new ROSLIB.Topic({
-    ros : ros,
-    name : "/cmd",
-    messageType : 'std_msgs/Int32'
-  });
-
-  move = function (value) {
-    var msg = new ROSLIB.Message({data: value});
-    cmd_vel_listener.publish(msg);
-  }
+var display_msg_listener = new ROSLIB.Topic({ros : ros,name : "/mock_human_interface_publisher",messageType : 'domain_handler_msgs/HumanInterfaceRequest'});
 
 function log_info(val) {
+  console.log(val)
               move(val)
             }
 
@@ -52,7 +22,7 @@ function generate_buttons(buttons_array){
     button.id = buttons_array[i];
     button.value = buttons_array[i];
     button.className = 'button';
-    button.onclick = log_info(i);
+    button.onclick = function() {log_info(i);};
  
     var container = document.getElementById('button_container');
     container.appendChild(button);
@@ -87,6 +57,39 @@ function generate_sliders(sliders_array){
   }
 }
 
-//generate_buttons(["hi","bye","option 1","option 2","option 3"]);
-generate_sliders([["slider_1",1,10],["slider_dedewd2",5,100]]);
+function parse_screen(data){
+  console.log(data)
+}
+
+function display_default_screen(){
+
+  robot_viz_div = document.createElement('div');
+  
+  camera_div = document.createElement('div');
+  camera_div.id = "mjpeg";
+
+  robot_viz = document.createElement('script'); 
+  robot_viz.id = "robot";
+  robot_viz.src = "./bundle/simple.js";
+
+  robot_canvas = document.createElement('canvas');
+  robot_canvas.id = "robot_canvas";
+  robot_canvas.className = "robot_viz";
+
+  var container = document.getElementById('visuals_container');
+  //container.appendChild(robot_viz_div);
+  //
+  container.appendChild(robot_viz);
+  container.appendChild(robot_canvas);
+
+  container.appendChild(camera_div);
+}
+
+display_msg_listener.subscribe(function(data) {
+            parse_screen(data);
+        });
+
+display_default_screen();
+generate_buttons(["hi","bye","option 1","option 2","option 3"]);
+//generate_sliders([["slider_1",1,10],["slider_dedewd2",5,100]]);
 console.log("executed creating buttons");

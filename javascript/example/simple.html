@@ -37,6 +37,10 @@
                 height: 405px;
             }
 
+            .vis {
+                
+            }
+
             .button{
                 padding: 3px;
                 margin-right: 5px;
@@ -73,9 +77,6 @@
         </script>
     </head>
 
-    <canvas id="myCanvas" class = "robot_viz">
-         <p>hi</p>
-    </canvas>
 
     <body onload="init()">
 
@@ -85,10 +86,10 @@
         <p>Connection status: <span id="status"></span></p>
         <p>Instructions: <span id="msg"></span></p>
         
-        <script width = 400 height = 400 id = "robot_1" src="./bundle/simple.js"> </script> 
-        <div id="mjpeg"></div>
+            
 
-        
+        <div id="visuals_container" class="vis">
+        </div>
 
         <div class="visuals"></div>
 
