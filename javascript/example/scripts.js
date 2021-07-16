@@ -103,16 +103,49 @@ function generate_sliders(sliders_array){
 
 function parse_data(data){
   console.log(data)
+  viz_data = data;
+
   if (data.display_type == 0 ){
-    viz_data = data
-    document.getElementById("msg").innerHTML = data.instruction_text;
-    generate_buttons(data.buttons)
-    generate_sliders(data.sliders)
+    document.getElementById("msg").innerHTML = viz_data.instruction_text;
+    generate_buttons(viz_data.buttons);
+    generate_sliders(viz_data.sliders);
+    return;
+  }
+  if (data.display_type == 1){
+    clear_screen();
+    document.getElementById("msg").innerHTML = viz_data.instruction_text;
+    generate_buttons(viz_data.buttons);
+    generate_sliders(viz_data.sliders);
+    var robot_1_div = add_robot("robot_1",traj=true);
+    var robot_2_div = add_robot("robot_2",traj=true);
+    var container = document.getElementById('visuals_container');
+    container.appendChild(robot_1_div);
+    container.appendChild(robot_2_div);
   }
 }
 
-function display_default_screen(){
+function add_robot(name,traj=false){
+
+  robot_div = document.createElement('div');
+  robot_div.id = name+"_div";
+  robot_div.className = "col-sm";
+  robot_viz = document.createElement('script'); 
+  robot_viz.id = name;
+  robot_viz.src = "./bundle/simple.js";
+  if (traj) {robot_viz.setAttribute("traj",true)}
+  else {robot_viz.setAttribute("traj",false)}
+
+  robot_canvas = document.createElement('canvas');
+  robot_canvas.id = name+"_canvas";
+  robot_canvas.className = "robot_viz";
+
+  robot_div.appendChild(robot_canvas);
+  robot_div.appendChild(robot_viz);
   
+  return robot_div;
+}
+
+function add_camera(){
   camera_div = document.createElement('div');
   camera_div.id = "mjpeg";
   camera_div.className = "col-sm";
@@ -121,27 +154,16 @@ function display_default_screen(){
   camera_viz.id = "camera";
   camera_viz.src = "./mjpeg_canvas_viewer.js";
 
-  robot_div = document.createElement('div');
-  robot_div.id = "robot_div";
-  robot_div.className = "col-sm";
-
-  robot_viz = document.createElement('script'); 
-  robot_viz.id = "robot";
-  robot_viz.src = "./bundle/simple.js";
-
-  robot_canvas = document.createElement('canvas');
-  robot_canvas.id = "robot_canvas";
-  robot_canvas.className = "robot_viz";
-
-  var container = document.getElementById('visuals_container');
-
-  container.appendChild(camera_div);
   camera_div.appendChild(camera_viz);
+  return camera_div;
+}
 
+function display_default_screen(){
+  var camera_div = add_camera();
+  var robot_div = add_robot("robot");
+  var container = document.getElementById('visuals_container');
+  container.appendChild(camera_div);
   container.appendChild(robot_div);
-  robot_div.appendChild(robot_canvas);
-  robot_div.appendChild(robot_viz);
-  
 }
 
 function clear_screen(clear_visuals=true){

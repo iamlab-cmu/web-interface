@@ -39053,7 +39053,24 @@
 
 	}
 
-	let canvas,scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,joints_array;
+	let joint_names = [
+	  "panda_joint1",
+	  "panda_joint2",
+	  "panda_joint3",
+	  "panda_joint4",
+	  "panda_joint5",
+	  "panda_joint6",
+	  "panda_joint7",
+	  "panda_joint8",
+	  "panda_hand_joint",
+	  "panda_finger_joint1",
+	  "panda_finger_joint2"
+	];
+
+	let canvas,scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,traj;
+	let timer = 0;
+	let follow_traj = false;
+	let joints_array = [];
 
 	console.log("Start");
 
@@ -39073,8 +39090,6 @@
 	render();
 
 	function init() {
-
-	    
 
 	    scene = new Scene();
 	    scene.background = new Color(0x263238);
@@ -39115,10 +39130,12 @@
 	    controls.target.y = 0.7;
 	    controls.update();
 
+	    var curr_update = document.currentScript.getAttribute('traj');
+	    var id = document.currentScript.getAttribute('id');
+
 	    // Load robot
 	    const manager = new LoadingManager();
 	    const loader = new URDFLoader(manager);
-	    console.log("sending command for file");
 	    loader.load('../../urdf/franka/urdf/franka.urdf', result => {
 
 	        robot = result;
@@ -39136,6 +39153,11 @@
 	        robot_listener.subscribe(function(m) {
 	            joints_array = m.q;
 	        });
+
+	        if (curr_update == "true"){
+	            follow_traj = true;
+	            if (id == 'robot_1') {traj = viz_data.traj1; console.log("here");}            if (id == 'robot_2') {traj = viz_data.traj2;}            console.log(traj);
+	        }
 
 	        for (let i = 10; i <= 16; i++) {
 	            const voxel = new Mesh( cubeGeo, cubeMaterial );
@@ -39169,11 +39191,28 @@
 	    camera.updateProjectionMatrix();
 	}
 
+
+	function updateJointsLive(){
+	    for (let i = 0; i < joints_array.length; i++) {
+	        robot.joints[joint_names[i]].setJointValue(joints_array[i]);
+	    }
+	}
+
+	function followTraj(){
+	    for (let i = 0; i < traj.joint_names.length; i++) {
+	        robot.joints[traj.joint_names[i]].setJointValue(traj.points[timer].positions[i]);
+	    }
+
+	    timer++;
+	    if (timer >= traj.points.length) timer = 0;
+	}
+
 	function render() {
 
 	    requestAnimationFrame(render);
 	    renderer.render(scene, camera);
-	    //updateJoints();
+	    if (follow_traj) followTraj();
+	    else updateJointsLive();
 	    
 	}
 
