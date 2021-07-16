@@ -1,0 +1,3 @@
+[submodule "catkin_ws/src/web-interface-msgs"]
+	path = catkin_ws/src/web-interface-msgs
+	url = https://github.com/iamlab-cmu/web-interface-msgs.git
