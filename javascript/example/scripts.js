@@ -14,20 +14,18 @@ display_msg_listener.subscribe(function(data) {
 
 var state_server_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_reply",messageType : 'domain_handler_msgs/HumanInterfaceReply'});
 
-var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_confirmation",messageType : 'std_msgs/Int32'});
+var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_confirmation",messageType : 'domain_handler_msgs/Confirmation'});
 
 
 let viz_data;
 let sliders = [];
 
 function button_click(i){
-  console.log("button_pressed");
   buttons_data  = viz_data.buttons.slice();
   sliders_data = viz_data.sliders.slice()
 
   for(let j = 0; j < sliders_data.length;j++){
     curr_slider = document.getElementById(sliders[j]);
-    console.log(curr_slider.value)
     sliders_data[j].value = parseInt(curr_slider.value);
   }
 
@@ -42,10 +40,8 @@ function button_click(i){
 
   state_server_publisher.publish(return_msg);
 
-  var confirmation_msg = new ROSLIB.Message({data: 1});
+  var confirmation_msg = new ROSLIB.Message({succeed: true});
   domain_handler_publisher.publish(confirmation_msg);
-
-  console.log(return_msg)
 
   if (viz_data.display_type == 0){
     clear_screen(clear_visuals=false);
@@ -102,9 +98,8 @@ function generate_sliders(sliders_array){
 }
 
 function parse_data(data){
-  console.log(data)
   viz_data = data;
-
+  console.log(data)
   if (data.display_type == 0 ){
     document.getElementById("msg").innerHTML = viz_data.instruction_text;
     generate_buttons(viz_data.buttons);
@@ -173,8 +168,6 @@ function clear_screen(clear_visuals=true){
   sliders = [];
   if (clear_visuals) document.getElementById('visuals_container').innerHTML = "";
 }
-
-console.log("listening to data")
 
 display_default_screen();
 //generate_buttons(["hi","bye","option 1","option 2","option 3"]);

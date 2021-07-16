@@ -36,12 +36,9 @@ let joint_names = [
 ]
 
 let canvas,scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,traj;
-let timer = 0;
+let traj_step = 0;
 let follow_traj = false;
 let joints_array = [];
-
-console.log("Start")
-
 
 
 var ros = new ROSLIB.Ros({url : 'ws://iam-wanda.ri.cmu.edu:9090'});
@@ -98,7 +95,8 @@ function init() {
     controls.target.y = 0.7;
     controls.update();
 
-    var curr_update = document.currentScript.getAttribute('traj');
+    //Need to access these variables here otherwise won't scope properly
+    var traj_txt = document.currentScript.getAttribute('traj');
     var id = document.currentScript.getAttribute('id');
 
     // Load robot
@@ -122,11 +120,10 @@ function init() {
             joints_array = m.q
         });
 
-        if (curr_update == "true"){
+        if (traj_txt == "true"){
             follow_traj = true;
-            if (id == 'robot_1') {traj = viz_data.traj1; console.log("here")};
+            if (id == 'robot_1') {traj = viz_data.traj1};
             if (id == 'robot_2') {traj = viz_data.traj2};
-            console.log(traj);
         }
 
         for (let i = 10; i <= 16; i++) {
@@ -170,11 +167,11 @@ function updateJointsLive(){
 
 function followTraj(){
     for (let i = 0; i < traj.joint_names.length; i++) {
-        robot.joints[traj.joint_names[i]].setJointValue(traj.points[timer].positions[i]);
+        robot.joints[traj.joint_names[i]].setJointValue(traj.points[traj_step].positions[i]);
     }
 
-    timer++;
-    if (timer >= traj.points.length) timer = 0;
+    traj_step++;
+    if (traj_step >= traj.points.length) traj_step = 0;
 }
 
 function render() {
