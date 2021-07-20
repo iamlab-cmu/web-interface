@@ -39,6 +39,9 @@ let canvas,scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,traj;
 let traj_step = 0;
 let follow_traj = false;
 let joints_array = [];
+let voxels_array = [];
+let got_voxel_data = false;
+let curr_voxels = [];
 
 
 var ros = new ROSLIB.Ros({url : 'ws://iam-wanda.ri.cmu.edu:9090'});
@@ -46,6 +49,12 @@ var robot_listener = new ROSLIB.Topic({
     ros : ros,
     name : '/robot_state_publisher_node_1/robot_state',
     messageType : 'franka_interface_msgs/RobotState'
+});
+
+var point_cloud_listener = new ROSLIB.Topic({
+    ros : ros,
+    name : '/voxels',
+    messageType : 'voxel_msgs/VoxelList'
 });
 
 
@@ -120,16 +129,16 @@ function init() {
             joints_array = m.q
         });
 
+        point_cloud_listener.subscribe(function(m) {
+            console.log("got_data");
+            voxels_array = m.voxel_list;
+            got_voxel_data = true;
+        });
+
         if (traj_txt == "true"){
             follow_traj = true;
             if (id == 'robot_1') {traj = viz_data.traj1};
             if (id == 'robot_2') {traj = viz_data.traj2};
-        }
-
-        for (let i = 10; i <= 16; i++) {
-            const voxel = new Mesh( cubeGeo, cubeMaterial );
-            voxel.position.set(i*0.02,0.01,0.01);
-            scene.add(voxel);
         }
         
         //updateJoints();
@@ -149,8 +158,9 @@ function init() {
 }
 
 function onResize() {
-    let width = 400;
-    let height = 400;//canvas.getAttribute('height');
+    let rect = canvas.getBoundingClientRect();
+    let width = rect.width;
+    let height = width / 4 * 3;//canvas.getAttribute('height');
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -174,11 +184,28 @@ function followTraj(){
     if (traj_step >= traj.points.length) traj_step = 0;
 }
 
+function draw_voxels(){
+    if (!got_voxel_data) return;
+    for (let i = 0; i < curr_voxels.length; i++){
+        scene.remove(curr_voxels[i]);
+    }
+    curr_voxels = [];
+    for (let i = 0; i < voxels_array.length; i++) {
+            var voxel_color = new Color(voxels_array[i].r,voxels_array[i].g,voxels_array[i].b);
+            const voxel = new Mesh( cubeGeo, new MeshBasicMaterial( { color: voxel_color } ) );
+            voxel.position.set(voxels_array[i].x,voxels_array[i].z,voxels_array[i].y);
+            curr_voxels.push(voxel);
+            scene.add(voxel);
+        }
+    got_voxel_data = false;
+}
+
 function render() {
 
     requestAnimationFrame(render);
     renderer.render(scene, camera);
     if (follow_traj) followTraj()
     else updateJointsLive(joints_array);
+    draw_voxels();
     
 }

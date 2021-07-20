@@ -8,13 +8,14 @@ ros.on('error', function(error) {document.getElementById("status").innerHTML = "
 ros.on('close', function() {document.getElementById("status").innerHTML = "Closed";});
 
 
-var display_msg_listener = new ROSLIB.Topic({ros : ros,name : "/human_interface_request",messageType : 'domain_handler_msgs/HumanInterfaceRequest'});
+var display_msg_listener = new ROSLIB.Topic({ros : ros,name : "/human_interface_request", messageType : 'web_interface_msgs/Request'});
 display_msg_listener.subscribe(function(data) {
+            console.log(data);
             parse_data(data);});
 
-var state_server_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_reply",messageType : 'domain_handler_msgs/HumanInterfaceReply'});
+var state_server_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_reply", messageType : 'web_interface_msgs/Reply'});
 
-var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_confirmation",messageType : 'domain_handler_msgs/Confirmation'});
+var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_confirmation", messageType : 'web_interface_msgs/Confirmation'});
 
 
 let viz_data;
@@ -170,5 +171,3 @@ function clear_screen(clear_visuals=true){
 }
 
 display_default_screen();
-//generate_buttons(["hi","bye","option 1","option 2","option 3"]);
-//generate_sliders([["slider_1",1,10],["slider_dedewd2",5,100]]);
