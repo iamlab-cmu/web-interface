@@ -4,43 +4,43 @@
 1. Install ROS Melodic following instructions here: http://wiki.ros.org/melodic/Installation/Ubuntu
 2. Install Node.js.
 ```
-	curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
-	sudo apt-get install -y nodejs
+curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
+sudo apt-get install -y nodejs
 ```
 3. Install rosbridge server.
 ```
-	sudo apt install ros-melodic-rosbridge-server
+sudo apt install ros-melodic-rosbridge-server
 ```
 4. Install web_video_server.
 ```
-	sudo apt install ros-melodic-web-video-server
+sudo apt install ros-melodic-web-video-server
 ```
 5. Clone this repository.
 ```
-	git clone https://github.com/iamlab-cmu/web-interface.git
+git clone https://github.com/iamlab-cmu/web-interface.git
 ```
 6. Install node js packages required.
 ```
-	cd web-interface/javascript
-	npm install
+cd web-interface/javascript
+npm install
 ```
 
 ## Running Instructions
 1. Start a roscore.
 ```
-	roscore
+roscore
 ```
 2. Start the rosbridge server.
 ```
-	roslaunch rosbridge_server rosbridge_websocket.launch
+roslaunch rosbridge_server rosbridge_websocket.launch
 ```
 3. Start the web_video_server.
 ```
-	rosrun web_video_server web_video_server
+rosrun web_video_server web_video_server
 ```
 4. Start the web server.
 ```
-	cd web-interface/javascript
-	npm start
+cd web-interface/javascript
+npm start
 ```
 5. Navigate to localhost:9080/javascript/example/simple.html in your web browser.
