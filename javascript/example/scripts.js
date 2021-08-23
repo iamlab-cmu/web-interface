@@ -1,5 +1,5 @@
 var ros = new ROSLIB.Ros({
-            url : 'ws://iam-wanda.ri.cmu.edu:9090'
+            url : 'ws://klz-pc:9090'
           });
 ros.on('connection', function() {document.getElementById("status").innerHTML = "Connected";});
 
@@ -124,10 +124,12 @@ function add_robot(name,traj=false){
 
   robot_div = document.createElement('div');
   robot_div.id = name+"_div";
-  robot_div.className = "col-sm";
+  robot_div.className = "col-sm-6";
+
   robot_viz = document.createElement('script'); 
   robot_viz.id = name;
   robot_viz.src = "./bundle/simple.js";
+
   if (traj) {robot_viz.setAttribute("traj",true)}
   else {robot_viz.setAttribute("traj",false)}
 
@@ -143,14 +145,20 @@ function add_robot(name,traj=false){
 
 function add_camera(){
   camera_div = document.createElement('div');
-  camera_div.id = "mjpeg";
-  camera_div.className = "col-sm";
+  camera_div.id = "camera_div";
+  camera_div.className = "col-sm-6";
+
+  camera_canvas = document.createElement('canvas');
+  camera_canvas.id = "camera_canvas";
+  camera_canvas.className = "camera_viz";
 
   camera_viz = document.createElement('script'); 
   camera_viz.id = "camera";
   camera_viz.src = "./mjpeg_canvas_viewer.js";
 
+  camera_div.appendChild(camera_canvas);
   camera_div.appendChild(camera_viz);
+
   return camera_div;
 }
 

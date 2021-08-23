@@ -246,7 +246,7 @@ MJPEGCANVAS.MultiStreamViewer.prototype.__proto__ = EventEmitter2.prototype;
 MJPEGCANVAS.Viewer = function(options) {
   var that = this;
   options = options || {};
-  var divID = options.divID;
+  var canvasID = options.canvasID;
   this.width = options.width;
   this.height = options.height;
   this.host = options.host;
@@ -266,11 +266,9 @@ MJPEGCANVAS.Viewer = function(options) {
   var errorIcon = new MJPEGCANVAS.ErrorIcon();
 
   // create the canvas to render to
-  this.canvas = document.createElement('canvas');
+  this.canvas = document.getElementById(canvasID);
   this.canvas.width = this.width;
   this.canvas.height = this.height;
-  this.canvas.style.background = '#aaaaaa';
-  document.getElementById(divID).appendChild(this.canvas);
   var context = this.canvas.getContext('2d');
 
   var drawInterval = Math.max(1 / this.refreshRate * 1000, this.interval);

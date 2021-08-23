@@ -35,7 +35,7 @@ let joint_names = [
   "panda_finger_joint2"
 ]
 
-let canvas,scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,traj;
+let canvas, scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,traj;
 let traj_step = 0;
 let follow_traj = false;
 let joints_array = [];
@@ -44,7 +44,7 @@ let got_voxel_data = false;
 let curr_voxels = [];
 
 
-var ros = new ROSLIB.Ros({url : 'ws://iam-wanda.ri.cmu.edu:9090'});
+var ros = new ROSLIB.Ros({url : 'ws://klz-pc:9090'});
 var robot_listener = new ROSLIB.Topic({
     ros : ros,
     name : '/robot_state_publisher_node_1/robot_state',
@@ -56,8 +56,6 @@ var point_cloud_listener = new ROSLIB.Topic({
     name : '/voxels',
     messageType : 'voxel_msgs/VoxelList'
 });
-
-
          
 canvas = document.getElementById(document.currentScript.getAttribute('id')+"_canvas");
 init();
@@ -76,7 +74,6 @@ function init() {
     renderer.outputEncoding = sRGBEncoding;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = PCFSoftShadowMap;
-    //document.body.appendChild(renderer.domElement);
 
     const directionalLight = new DirectionalLight(0xffffff, 1.0);
     directionalLight.castShadow = true;
@@ -157,10 +154,20 @@ function init() {
 
 }
 
-function onResize() {
-    let rect = canvas.getBoundingClientRect();
-    let width = rect.width;
-    let height = width / 4 * 3;//canvas.getAttribute('height');
+function onResize() { 
+    let visual_container = document.getElementById('visuals_container');
+    let rect = visual_container.getBoundingClientRect();
+
+    let width, height;
+    if (rect.width < 540) {
+        width = rect.width - 30;
+        height = width / 4 * 3;
+    }
+    else {
+        width = (rect.width - 60) / 2;
+        height = width / 4 * 3;
+    }
+
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
 
