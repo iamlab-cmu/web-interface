@@ -17,17 +17,23 @@ var state_server_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interfac
 
 var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interface_confirmation", messageType : 'web_interface_msgs/Confirmation'});
 
-
 let viz_data;
 let sliders = [];
+let text_inputs = [];
 
 function button_click(i){
   buttons_data  = viz_data.buttons.slice();
   sliders_data = viz_data.sliders.slice()
+  text_data = viz_data.text_inputs.slice()
 
-  for(let j = 0; j < sliders_data.length;j++){
+  for(let j = 0; j < sliders_data.length; j++){
     curr_slider = document.getElementById(sliders[j]);
     sliders_data[j].value = parseInt(curr_slider.value);
+  }
+
+  for(let k = 0; k < text_data.length; k++){
+    curr_text = document.getElementById(text_inputs[k]);
+    text_data[k].value = curr_text.value;
   }
 
   buttons_data[i].value = true;
@@ -35,14 +41,14 @@ function button_click(i){
   var return_msg = new ROSLIB.Message({
       buttons: buttons_data,
       sliders: sliders_data,
-      text_inputs: viz_data.text_inputs,
+      text_inputs: text_data,
       Bbox: viz_data.boxes
     });
 
   state_server_publisher.publish(return_msg);
 
-  var confirmation_msg = new ROSLIB.Message({succeed: true});
-  domain_handler_publisher.publish(confirmation_msg);
+  // var confirmation_msg = new ROSLIB.Message({succeed: true});
+  // domain_handler_publisher.publish(confirmation_msg);
 
   if (viz_data.display_type == 0){
     clear_screen(clear_visuals=false);
@@ -53,19 +59,59 @@ function button_click(i){
   }
 }
 
+function generate_text(text_array){
+  var inputs_container = document.getElementById('inputs_container');
+  text_div = document.createElement('div');
+  text_div.id = "text_div";
+  text_div.className = "col-sm-12";
+  inputs_container.appendChild(text_div)
+  text_container = document.createElement('form');
+  text_container.id = "text_container";
+  text_div.appendChild(text_container)
+
+  for(let i = 0; i < text_array.length; i++){
+    var form_group = document.createElement('div');
+    form_group.className = 'form-group row';
+
+    var label = document.createElement('label');
+    label.innerHTML = text_array[i].text;
+    label.className = "col-sm-2 col-form-label";
+    label.setAttribute('for', text_array[i].name);
+
+    var text_div = document.createElement('div');
+    text_div.className = "col-sm-10";
+
+    var text_input = document.createElement('input');
+    text_input.className = "form-control";
+    text_input.type = "text";
+    text_input.id = text_array[i].name;
+    text_input.setAttribute('placeholder',text_array[i].value);
+    text_div.appendChild(text_input);
+
+    form_group.appendChild(label);
+    form_group.appendChild(text_div);
+    
+    text_container.appendChild(form_group);
+    text_inputs.push(text_array[i].name);
+  }
+}
 
 
 function generate_buttons(buttons_array){
-  var container = document.getElementById('button_container');
+  var inputs_container = document.getElementById('inputs_container');
+  button_container = document.createElement('div');
+  button_container.id = "button_container";
+  button_container.className = "col-sm-12 text-center";
+  inputs_container.appendChild(button_container)
 
-  for(let i = 0;i < buttons_array.length;i++){
+  for(let i = 0; i < buttons_array.length; i++){
     var button = document.createElement('input');
     button.type = 'button';
     button.id = buttons_array[i].text;
     button.value = buttons_array[i].name;
-    button.className = 'btn btn-outline-secondary';
+    button.className = 'btn btn-outline-secondary mr-2';
     button.onclick = function() {button_click(i);};
-     container.appendChild(button);
+    button_container.appendChild(button);
   }
 }
 
@@ -92,7 +138,13 @@ function generate_slider(name,text,min,max){
 }
 
 function generate_sliders(sliders_array){
-  for(let i = 0;i < sliders_array.length;i++){
+  var inputs_container = document.getElementById('inputs_container');
+  slider_container = document.createElement('div');
+  slider_container.id = "slider_container";
+  slider_container.className = "col-sm-12";
+  inputs_container.appendChild(slider_container)
+
+  for(let i = 0; i < sliders_array.length; i++){
     generate_slider(sliders_array[i].name,sliders_array[i].text,sliders_array[i].min.toString(),sliders_array[i].max.toString());
     sliders.push(sliders_array[i].name);
   }
@@ -103,20 +155,34 @@ function parse_data(data){
   console.log(data)
   if (data.display_type == 0 ){
     document.getElementById("msg").innerHTML = viz_data.instruction_text;
-    generate_buttons(viz_data.buttons);
+    generate_text(viz_data.text_inputs);
     generate_sliders(viz_data.sliders);
+    generate_buttons(viz_data.buttons);
     return;
   }
   if (data.display_type == 1){
     clear_screen();
     document.getElementById("msg").innerHTML = viz_data.instruction_text;
-    generate_buttons(viz_data.buttons);
+    generate_text(viz_data.text_inputs);
     generate_sliders(viz_data.sliders);
+    generate_buttons(viz_data.buttons);
     var robot_1_div = add_robot("robot_1",traj=true);
     var robot_2_div = add_robot("robot_2",traj=true);
     var container = document.getElementById('visuals_container');
     container.appendChild(robot_1_div);
     container.appendChild(robot_2_div);
+  }
+  if (data.display_type == 2){
+    clear_screen();
+    document.getElementById("msg").innerHTML = viz_data.instruction_text;
+    generate_text(viz_data.text_inputs);
+    generate_sliders(viz_data.sliders);
+    generate_buttons(viz_data.buttons);
+    var camera_div = add_camera();
+    var robot_1_div = add_robot("robot_1", traj=true);
+    var container = document.getElementById('visuals_container');
+    container.appendChild(camera_div);
+    container.appendChild(robot_1_div);
   }
 }
 
@@ -172,9 +238,9 @@ function display_default_screen(){
 
 function clear_screen(clear_visuals=true){
   document.getElementById("msg").innerHTML = "";
-  document.getElementById('button_container').innerHTML = "";
-  document.getElementById('slider_container').innerHTML = "";
+  document.getElementById('inputs_container').innerHTML = "";
   sliders = [];
+  text_inputs = [];
   if (clear_visuals) document.getElementById('visuals_container').innerHTML = "";
 }
 
