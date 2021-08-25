@@ -1,5 +1,5 @@
 var ros = new ROSLIB.Ros({
-            url : 'ws://klz-pc:9090'
+            url : 'ws://192.168.3.201:9090'
           });
 ros.on('connection', function() {document.getElementById("status").innerHTML = "Connected";});
 
@@ -45,6 +45,7 @@ function button_click(i){
       Bbox: viz_data.boxes
     });
 
+  state_server_publisher.publish(return_msg);
   state_server_publisher.publish(return_msg);
 
   // var confirmation_msg = new ROSLIB.Message({succeed: true});
@@ -151,6 +152,7 @@ function generate_sliders(sliders_array){
 }
 
 function parse_data(data){
+  clear_screen(clear_visuals=false);
   viz_data = data;
   console.log(data)
   if (data.display_type == 0 ){

@@ -44,7 +44,7 @@ let got_voxel_data = false;
 let curr_voxels = [];
 
 
-var ros = new ROSLIB.Ros({url : 'ws://klz-pc:9090'});
+var ros = new ROSLIB.Ros({url : 'ws://192.168.3.201:9090'});
 var robot_listener = new ROSLIB.Topic({
     ros : ros,
     name : '/robot_state_publisher_node_1/robot_state',

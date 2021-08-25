@@ -14,7 +14,7 @@ function init() {
   // Create the main viewer.
   var viewer = new MJPEGCANVAS.Viewer({
     canvasID : 'camera_canvas',
-    host : 'klz-pc',
+    host : '192.168.3.201',
     width : width,
     height : height,
     topic : '/camera/color/image_raw',
