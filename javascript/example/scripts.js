@@ -1,5 +1,8 @@
+let host_name = "192.168.3.201"
+let ros_url = 'ws://'+host_name+':9090'
+
 var ros = new ROSLIB.Ros({
-            url : 'ws://192.168.3.201:9090'
+            url : ros_url
           });
 ros.on('connection', function() {document.getElementById("status").innerHTML = "Connected";});
 
@@ -20,6 +23,7 @@ var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interf
 let viz_data;
 let sliders = [];
 let text_inputs = [];
+let default_camera_topic_name = "/camera/color/image_raw";
 
 function button_click(i){
   buttons_data  = viz_data.buttons.slice();
@@ -180,7 +184,7 @@ function parse_data(data){
     generate_text(viz_data.text_inputs);
     generate_sliders(viz_data.sliders);
     generate_buttons(viz_data.buttons);
-    var camera_div = add_camera();
+    var camera_div = add_camera(viz_data.camera_topic, half_size=true);
     var robot_1_div = add_robot("robot_1", traj=true);
     var container = document.getElementById('visuals_container');
     container.appendChild(camera_div);
@@ -197,6 +201,7 @@ function add_robot(name,traj=false){
   robot_viz = document.createElement('script'); 
   robot_viz.id = name;
   robot_viz.src = "./bundle/simple.js";
+  robot_viz.setAttribute("ros_url", ros_url);
 
   if (traj) {robot_viz.setAttribute("traj",true)}
   else {robot_viz.setAttribute("traj",false)}
@@ -211,10 +216,11 @@ function add_robot(name,traj=false){
   return robot_div;
 }
 
-function add_camera(){
+function add_camera(topic_name, half_size){
   camera_div = document.createElement('div');
   camera_div.id = "camera_div";
-  camera_div.className = "col-sm-6";
+  if (half_size) {camera_div.className = "col-sm-6"}
+  else {camera_div.className = "col-sm-12"}
 
   camera_canvas = document.createElement('canvas');
   camera_canvas.id = "camera_canvas";
@@ -223,6 +229,9 @@ function add_camera(){
   camera_viz = document.createElement('script'); 
   camera_viz.id = "camera";
   camera_viz.src = "./mjpeg_canvas_viewer.js";
+  camera_viz.setAttribute("topic_name", topic_name);
+  camera_viz.setAttribute("host_name", host_name);
+  camera_viz.setAttribute("canvas_name", "camera_canvas");
 
   camera_div.appendChild(camera_canvas);
   camera_div.appendChild(camera_viz);
@@ -231,7 +240,7 @@ function add_camera(){
 }
 
 function display_default_screen(){
-  var camera_div = add_camera();
+  var camera_div = add_camera(default_camera_topic_name, half_size=true);
   var robot_div = add_robot("robot");
   var container = document.getElementById('visuals_container');
   container.appendChild(camera_div);
