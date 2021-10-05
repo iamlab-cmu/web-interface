@@ -24,6 +24,10 @@ git clone https://github.com/iamlab-cmu/web-interface.git
 cd web-interface/javascript
 npm install
 ```
+7. Modify Line 1 in javascript/example/scripts.js and set it to the ip address of the computer.
+```
+let host_name = "localhost"
+```
 
 ## Running Instructions
 1. Start a roscore.

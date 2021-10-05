@@ -156,10 +156,10 @@ function generate_sliders(sliders_array){
 }
 
 function parse_data(data){
-  clear_screen(clear_visuals=false);
   viz_data = data;
   console.log(data)
   if (data.display_type == 0 ){
+    clear_screen(clear_visuals=false);
     document.getElementById("msg").innerHTML = viz_data.instruction_text;
     generate_text(viz_data.text_inputs);
     generate_sliders(viz_data.sliders);
@@ -189,6 +189,10 @@ function parse_data(data){
     var container = document.getElementById('visuals_container');
     container.appendChild(camera_div);
     container.appendChild(robot_1_div);
+  }
+  if (data.display_type == 3){
+    clear_screen();
+    load_bokeh_server();
   }
 }
 
@@ -245,6 +249,22 @@ function display_default_screen(){
   var container = document.getElementById('visuals_container');
   container.appendChild(camera_div);
   container.appendChild(robot_div);
+}
+
+function load_bokeh_server(){
+  var container = document.getElementById('visuals_container');
+  bokeh_div = document.createElement('div');
+  bokeh_div.id = "bokeh_div";
+  bokeh_div.className = "col-sm-12"
+
+  bokeh_viz = document.createElement('script'); 
+  bokeh_viz.id = "1039";
+  bokeh_viz.src = "./bokeh.js";
+  bokeh_viz.setAttribute("host_name", host_name);
+  
+  bokeh_div.appendChild(bokeh_viz);
+  
+  container.appendChild(bokeh_div);
 }
 
 function clear_screen(clear_visuals=true){
