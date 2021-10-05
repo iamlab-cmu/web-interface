@@ -1,4 +1,4 @@
-let host_name = "192.168.3.201"
+let host_name = "iam-thor.ri.cmu.edu"
 let ros_url = 'ws://'+host_name+':9090'
 
 var ros = new ROSLIB.Ros({
@@ -51,9 +51,6 @@ function button_click(i){
 
   state_server_publisher.publish(return_msg);
   state_server_publisher.publish(return_msg);
-
-  // var confirmation_msg = new ROSLIB.Message({succeed: true});
-  // domain_handler_publisher.publish(confirmation_msg);
 
   if (viz_data.display_type == 0){
     clear_screen(clear_visuals=false);
