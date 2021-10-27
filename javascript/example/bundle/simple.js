@@ -48777,7 +48777,7 @@
 	    for (let i = 0; i < voxels_array.length; i++) {
 	            var voxel_color = new Color(voxels_array[i].r,voxels_array[i].g,voxels_array[i].b);
 	            const voxel = new Mesh( cubeGeo, new MeshBasicMaterial( { color: voxel_color } ) );
-	            voxel.position.set(voxels_array[i].x,voxels_array[i].z,voxels_array[i].y);
+	            voxel.position.set(voxels_array[i].x,voxels_array[i].z,-voxels_array[i].y);
 	            curr_voxels.push(voxel);
 	            scene.add(voxel);
 	        }

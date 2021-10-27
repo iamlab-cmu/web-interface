@@ -23,7 +23,7 @@ var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interf
 let viz_data;
 let sliders = [];
 let text_inputs = [];
-let default_camera_topic_name = "/camera/color/image_raw";
+let default_camera_topic_name = "/rgb/image_raw";
 
 function button_click(i){
   buttons_data  = viz_data.buttons.slice();
