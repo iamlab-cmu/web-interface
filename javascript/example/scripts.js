@@ -23,6 +23,7 @@ var domain_handler_publisher = new ROSLIB.Topic({ros : ros,name : "/human_interf
 let viz_data;
 let sliders = [];
 let text_inputs = [];
+let current_display_type = 0;
 let default_camera_topic_name = "/rgb/image_raw";
 
 function button_click(i){
@@ -155,8 +156,15 @@ function generate_sliders(sliders_array){
 function parse_data(data){
   viz_data = data;
   console.log(data)
-  if (data.display_type == 0 ){
-    clear_screen(clear_visuals=false);
+  if (data.display_type == 0){
+    if (current_display_type == 0) {
+      clear_screen(clear_visuals=false);
+    }
+    else {
+      clear_screen();
+      display_default_screen();
+    }
+    current_display_type = 0;
     document.getElementById("msg").innerHTML = viz_data.instruction_text;
     generate_text(viz_data.text_inputs);
     generate_sliders(viz_data.sliders);
@@ -164,7 +172,13 @@ function parse_data(data){
     return;
   }
   if (data.display_type == 1){
-    clear_screen();
+    if (current_display_type == 1) {
+      clear_screen(clear_visuals=false);
+    }
+    else {
+      clear_screen();
+    }
+    current_display_type = 1;
     document.getElementById("msg").innerHTML = viz_data.instruction_text;
     generate_text(viz_data.text_inputs);
     generate_sliders(viz_data.sliders);
@@ -176,7 +190,13 @@ function parse_data(data){
     container.appendChild(robot_2_div);
   }
   if (data.display_type == 2){
-    clear_screen();
+    if (current_display_type == 2) {
+      clear_screen(clear_visuals=false);
+    }
+    else {
+      clear_screen();
+    }
+    current_display_type = 2;
     document.getElementById("msg").innerHTML = viz_data.instruction_text;
     generate_text(viz_data.text_inputs);
     generate_sliders(viz_data.sliders);
@@ -188,7 +208,13 @@ function parse_data(data){
     container.appendChild(robot_1_div);
   }
   if (data.display_type == 3){
-    clear_screen();
+    if (current_display_type == 3) {
+      clear_screen(clear_visuals=false);
+    }
+    else {
+      clear_screen();
+    }
+    current_display_type = 3;
     load_bokeh_server();
   }
 }
