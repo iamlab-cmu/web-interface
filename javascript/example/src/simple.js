@@ -39,6 +39,7 @@ let canvas, scene, camera, renderer, robot, controls, cubeGeo, cubeMaterial,traj
 let traj_step = 0;
 let follow_traj = false;
 let joints_array = [];
+let num_voxels = 0;
 let voxels_array = [];
 let got_voxel_data = false;
 let curr_voxels = [];
@@ -129,7 +130,8 @@ function init() {
 
         point_cloud_listener.subscribe(function(m) {
             console.log("got_data");
-            voxels_array = m.voxel_list;
+            num_voxels = m.num_voxels;
+            voxels_array = m.data;
             got_voxel_data = true;
         });
 
@@ -198,10 +200,10 @@ function draw_voxels(){
         scene.remove(curr_voxels[i]);
     }
     curr_voxels = [];
-    for (let i = 0; i < voxels_array.length; i++) {
-            var voxel_color = new Color(voxels_array[i].r,voxels_array[i].g,voxels_array[i].b);
+    for (let i = 0; i < num_voxels; i++) {
+            var voxel_color = new Color(voxels_array[i*6+3],voxels_array[i*6+4],voxels_array[i*6+5]);
             const voxel = new Mesh( cubeGeo, new MeshBasicMaterial( { color: voxel_color } ) );
-            voxel.position.set(voxels_array[i].x,voxels_array[i].z,-voxels_array[i].y);
+            voxel.position.set(voxels_array[i*6],voxels_array[i*6+2],-voxels_array[i*6+1]);
             curr_voxels.push(voxel);
             scene.add(voxel);
         }
