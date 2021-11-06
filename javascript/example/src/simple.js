@@ -130,6 +130,7 @@ function init() {
 
         point_cloud_listener.subscribe(function(m) {
             console.log("got_data");
+            // console.log(m.num_voxels);
             num_voxels = m.num_voxels;
             voxels_array = m.data;
             got_voxel_data = true;
@@ -201,12 +202,12 @@ function draw_voxels(){
     }
     curr_voxels = [];
     for (let i = 0; i < num_voxels; i++) {
-            var voxel_color = new Color(voxels_array[i*6+3],voxels_array[i*6+4],voxels_array[i*6+5]);
-            const voxel = new Mesh( cubeGeo, new MeshBasicMaterial( { color: voxel_color } ) );
-            voxel.position.set(voxels_array[i*6],voxels_array[i*6+2],-voxels_array[i*6+1]);
-            curr_voxels.push(voxel);
-            scene.add(voxel);
-        }
+        var voxel_color = new Color(voxels_array[i*6+3],voxels_array[i*6+4],voxels_array[i*6+5]);
+        const voxel = new Mesh( cubeGeo, new MeshBasicMaterial( { color: voxel_color } ) );
+        voxel.position.set(voxels_array[i*6],voxels_array[i*6+2],-voxels_array[i*6+1]);
+        curr_voxels.push(voxel);
+        scene.add(voxel);
+    }
     got_voxel_data = false;
 }
 
