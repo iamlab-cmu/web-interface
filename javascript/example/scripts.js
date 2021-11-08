@@ -208,14 +208,9 @@ function parse_data(data){
     container.appendChild(robot_1_div);
   }
   if (data.display_type == 3){
-    if (current_display_type == 3) {
-      clear_screen(clear_visuals=false);
-    }
-    else {
-      clear_screen();
-    }
-    current_display_type = 3;
+    clear_screen();
     load_bokeh_server();
+    current_display_type = 3; 
   }
 }
 
